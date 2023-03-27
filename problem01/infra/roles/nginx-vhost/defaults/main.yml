@@ -1,0 +1,4 @@
+---
+nginx_vhost_name: localhost
+nginx_vhost_target_host: localhost
+nginx_vhost_target_port: 80

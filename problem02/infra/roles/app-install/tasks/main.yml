@@ -1,0 +1,35 @@
+---
+- name: Création du user applicatif
+  user:
+    name: hello
+    shell: /bin/bash
+    createhome: yes
+
+- name: Copy app
+  copy:
+    src: "../app/{{ item }}"
+    dest: "/home/hello/{{ item }}"
+    owner: hello
+    group: hello
+  with_items:
+  - hello.js
+  - config.json
+
+- name: Save pm2 as a service
+  command: pm2 startup systemd -u hello --hp /home/hello
+
+- name: Enabling service
+  service:
+    name: pm2-hello
+    state: started
+    enabled: true
+
+- name: Launch app in pm2
+  become_user: hello
+  command: pm2 start --force hello.js
+  args:
+    chdir: /home/hello/
+
+- name: Save in pm2
+  become_user: hello
+  command: pm2 save

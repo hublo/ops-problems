@@ -1,0 +1,21 @@
+---
+- hosts: nginx
+  become: true
+  roles:
+    - role: nginx-install
+
+- hosts: nodejs
+  become: true
+  gather_facts: true
+  roles:
+    - role: nodejs-install
+    - role: pm2-install
+    - role: app-install
+
+- hosts: nginx
+  become: true
+  roles:
+    - role: nginx-vhost
+      nginx_vhost_name: "192.168.201.7 localhost nodejs"
+      nginx_vhost_target_host: "{{ groups['nodejs'][0] }}"
+      nginx_vhost_target_port: 8080

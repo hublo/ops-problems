@@ -1,0 +1,17 @@
+---
+- name: Get libselinux-python
+  apt:
+    pkg:
+      - python3-selinux
+      # - python-selinux
+      # - SELinux-policy
+    state: latest
+    update_cache: true
+
+- name: Disabling selinux
+  selinux:
+    state: disabled
+  notify: Reboot
+
+- name: meta flush_handlers
+  meta: flush_handlers

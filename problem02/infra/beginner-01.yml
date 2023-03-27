@@ -1,0 +1,20 @@
+---
+# Make it not work
+# Résoudre via :
+    # netstat -tunapl
+    # ps aux
+    # systemctl stop / yum remove
+
+- hosts: 192.168.56.20
+  become: true
+  handlers:
+  - name: restart pm2
+    service:
+      name: pm2-hello
+      state: restarted
+  tasks:
+  - name: change conf permissions
+    file:
+      name: /home/hello/config.json
+      mode: 000
+    notify: restart pm2

@@ -1,0 +1,35 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  config.vm.provider "docker" do |d|
+    d.image = "ubuntu-investig"
+    d.remains_running = true
+    d.has_ssh = true
+    d.create_args = [
+  '--mount', 'type=tmpfs,destination=/run',
+  '--mount', 'type=tmpfs,destination=/run/lock',
+  '-v', '/sys/fs/cgroup:/sys/fs/cgroup:rw',
+  '--cap-add=NET_ADMIN',
+  '--cap-add=SYS_PTRACE',
+  '--cgroupns=host'
+]
+end
+
+  config.vm.define :rp, autostart: true do |myvm|
+    myvm.vm.hostname = "rp"
+    myvm.vm.network "private_network", ip: "192.168.56.10"
+  end
+
+  2.times do |i|
+    config.vm.define "nodejs#{i+1}".to_sym, autostart: true do |nodejs|
+      nodejs.vm.hostname = "nodejs#{i+1}"
+      nodejs.vm.network "private_network", ip: "192.168.56.2#{i}"
+    end
+  end
+
+end

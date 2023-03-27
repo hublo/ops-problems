@@ -1,0 +1,27 @@
+---
+- name: Install dependencies
+  package:
+    name:
+    - wget
+    - git
+    - tar
+    - zip
+
+- name: Create folder
+  file:
+    state: directory
+    name: /opt/node
+
+- name: "Add nodejs apt key"
+  apt_key:
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    state: present
+
+- name: "Add nodejs 16.x in apt repo"
+  apt_repository:
+    repo: deb https://deb.nodesource.com/node_16.x {{ ansible_distribution_release }} main
+    update_cache: yes
+
+- name: Get nodejs
+  package:
+    name: nodejs

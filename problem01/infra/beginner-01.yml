@@ -1,0 +1,73 @@
+---
+# Make it not work
+# Résoudre via :
+# netstat -tunapl
+# ps aux
+# systemctl stop / yum remove
+
+- hosts: nginx
+  become: true
+  handlers:
+    - name: Reload Apache
+      service:
+        name: apache2
+        state: reloaded
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
+  tasks:
+    - name: Stop nginx
+      service:
+        name: nginx
+        state: stopped
+
+    - name: Install apache
+      package:
+        name: apache2
+
+    - name: Disable default Apache site
+      shell: /usr/sbin/a2dissite 000-default.conf
+      notify: Reload Apache
+
+    - name: Start apache
+      service:
+        name: apache2
+        state: started
+
+    - name: Start nginx
+      service:
+        name: nginx
+        state: started
+      ignore_errors: yes
+
+    # Kill the conf for logs
+    - name: Change logs dest to /tmp
+      lineinfile:
+        dest: "/etc/nginx/sites-enabled/{{ groups['nodejs'][0] }}.conf"
+        regexp: access_log
+        line: access_log /tmp/access.log;
+      tags: [ nginx-logs ]
+
+    - name: Change logs dest to /tmp
+      lineinfile:
+        dest: "/etc/nginx/sites-enabled/{{ groups['nodejs'][0] }}.conf"
+        regexp: error_log
+        line: error_log /tmp/error.log;
+      tags: [ nginx-logs ]
+
+
+# App : pm2 problem
+- hosts: nodejs
+  become: true
+  tasks:
+    - name: Listen only on localhost
+      lineinfile:
+        dest: /home/hello/hello.js
+        regexp: listen
+        line: "}).listen(8080, 'localhost');"
+
+    - name: Kill pm2
+      become_user: hello
+      command: pm2 kill

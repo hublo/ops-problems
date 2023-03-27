@@ -1,0 +1,14 @@
+---
+# - name: Install epel-release
+#   package:
+#     name: epel-release
+
+- name: Get tools
+  package:
+    name:
+    - net-tools
+    - strace
+    - nmap
+    - htop
+    - lsof
+    - tcpdump

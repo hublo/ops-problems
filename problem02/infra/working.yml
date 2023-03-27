@@ -1,0 +1,21 @@
+---
+- hosts: all
+  become: true
+  roles:
+    # - role: selinux-disable
+    - role: debug-tooling
+  tags:
+    - tooling
+
+- hosts: rp
+  become: true
+  roles:
+    - role: haproxy-install
+
+- hosts: nodejs
+  become: true
+  gather_facts: true
+  roles:
+    - role: nodejs-install
+    - role: pm2-install
+    - role: app-install
