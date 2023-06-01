@@ -1,0 +1,7 @@
+---
+
+- name: create huge file
+  command: fallocate -l 1300M /data/mysql/1
+  args:
+    creates: /data/mysql/1
+

@@ -1,0 +1,36 @@
+---
+
+- name: install mariadb
+  package:
+    name: mariadb-server
+
+- name: create mysql dir
+  file:
+    path: /data/mysql
+    state: directory
+    owner: mysql
+    group: mysql
+
+- name: get /var/lib/mysql stat
+  stat:
+    path: /var/lib/mysql
+  register: dir_result
+
+- name: remove old mysql dir
+  file:
+    path: /var/lib/mysql
+    state: absent
+  when: dir_result.stat.isdir is defined and dir_result.stat.isdir
+
+- name: symlink
+  file:
+    dest: /var/lib/mysql
+    src: /data/mysql
+    state: link
+
+- name: start / enable service
+  service:
+    name: mariadb
+    state: started
+    enabled: true
+

@@ -1,0 +1,9 @@
+---
+- hosts: all
+  gather_facts: true
+  become: true
+  roles:
+    - role: selinux-disable
+    - role: debug-tooling
+    - role: datavolume
+    - role: mariadb

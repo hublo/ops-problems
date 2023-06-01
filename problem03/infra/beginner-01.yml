@@ -1,0 +1,11 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - role: fulldisc
+    - role: app-install
+  tasks:
+  - name: make zombie file descriptor
+    file:
+      name: /data/2
+      state: absent

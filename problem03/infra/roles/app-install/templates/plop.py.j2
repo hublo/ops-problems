@@ -1,0 +1,16 @@
+#!/usr/bin/env python2
+# vim:fileencoding=utf-8
+import time
+
+def main():
+    with open("/data/2", 'w') as outfile:
+	while True:
+		try:
+			outfile.write("This is a very useless line made to fill the disc\n")
+		except:
+			time.sleep(1)
+
+
+if __name__ == '__main__':
+    main()
+

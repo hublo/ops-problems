@@ -1,0 +1,32 @@
+---
+
+- name: remove Swap, make dir and mount it
+  block:
+  - name: remove swap
+    command: swapoff -a
+  - name: make FS
+    filesystem:
+      fstype: ext4
+      dev: /dev/mapper/VolGroup00-LogVol01
+      force: true
+  when: "ansible_swaptotal_mb > 1"
+
+- name: remove swap from fstab
+  mount:
+    src: /dev/mapper/VolGroup00-LogVol01
+    path: swap
+    fstype: swap
+    state: absent
+
+- name: mount /data
+  mount:
+    src: /dev/mapper/VolGroup00-LogVol01
+    path: /data
+    fstype: ext4
+    state: mounted
+
+- name: create mysql dir
+  file:
+    path: /data/mysql
+    state: directory
+

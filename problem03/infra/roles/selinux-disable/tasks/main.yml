@@ -1,0 +1,9 @@
+---
+- name: Get libselinux-python
+  yum:
+    name: libselinux-python
+    state: present
+
+- name: Disabling selinux
+  selinux:
+    state: disabled
